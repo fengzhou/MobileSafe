@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import com.example.ui.SettingItemView;
 
@@ -15,12 +16,20 @@ public class Step2Activity extends BaseSetupActivity {
 
 	private SettingItemView svi_step_sim;
 	private TelephonyManager telephonyManager;
+	private Button pre;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_step2);
 		svi_step_sim = (SettingItemView) findViewById(R.id.bingsim);
+		pre = (Button) findViewById(R.id.pre);
+		pre.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				method_pre();
+			}
+		});
 		String sim = sp.getString("sim",null);
 		if(TextUtils.isEmpty(sim)){
 			//如果为空,没有绑定
@@ -62,6 +71,9 @@ public class Step2Activity extends BaseSetupActivity {
 
 	@Override
 	protected void showPre() {
+		method_pre();
+	}
+	private void method_pre(){
 		Intent intent = new Intent(this,Step1Activity.class);
 		startActivity(intent);
 		finish();

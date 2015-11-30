@@ -21,7 +21,7 @@
 		<item name="android:layout_height">wrap_content</item>
 	</style>
 	<style name="button_pre_style">
-		<item name="android:onClick">pre</item>
+		<!--<item name="android:onClick">pre</item>-->
 		<item name="android:layout_alignParentLeft">true</item>
 		<item name="android:layout_alignParentBottom">true</item>
 		<item name="android:layout_marginRight">10dip</item>

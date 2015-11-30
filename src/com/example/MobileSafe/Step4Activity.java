@@ -3,6 +3,7 @@ package com.example.MobileSafe;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
@@ -11,11 +12,19 @@ import android.widget.CompoundButton;
  */
 public class Step4Activity extends BaseSetupActivity {
 	private CheckBox checkBox;
+	private Button button;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_step4);
 		checkBox = (CheckBox) findViewById(R.id.cb_proteting);
+		button = (Button) findViewById(R.id.pre4_3);
+		button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				pre4_3();
+			}
+		});
 		boolean proteting = sp.getBoolean("proteting",false);
 		if(proteting){
 			checkBox.setText("手机防盗已经开启");
@@ -53,6 +62,9 @@ public class Step4Activity extends BaseSetupActivity {
 	}
 	@Override
 	protected void showPre() {
+		pre4_3();
+	}
+	public void pre4_3(){
 		Intent intent = new Intent(this,Step3Activity.class);
 		startActivity(intent);
 		finish();

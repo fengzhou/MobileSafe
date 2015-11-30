@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -12,10 +13,18 @@ import android.widget.Toast;
  */
 public class Step3Activity extends BaseSetupActivity {
 	private EditText editText;
+	private Button button;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_step3);
+		button = (Button) findViewById(R.id.pre3_2);
+		button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				pre3_2();
+			}
+		});
 		editText = (EditText) findViewById(R.id.inputphonenumber);
 		String phone = sp.getString("phone",null);
 		if(!TextUtils.isEmpty(phone)){
@@ -39,11 +48,17 @@ public class Step3Activity extends BaseSetupActivity {
 
 	@Override
 	protected void showPre() {
-		Intent intent = new Intent(this, Step2Activity.class);
+		pre3_2();
+	}
+
+	 private void pre3_2(){
+		Intent intent = new Intent(Step3Activity.this, Step2Activity.class);
 		startActivity(intent);
 		finish();
 		overridePendingTransition(R.anim.tran_pre_in, R.anim.tran_pre_out);
 	}
+
+
 	public void selectContant(View view){
 		Intent intent = new Intent(this,SelectContantActivity.class);
 		startActivityForResult(intent,0);
