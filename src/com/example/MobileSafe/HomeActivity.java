@@ -40,14 +40,19 @@ public class HomeActivity extends Activity {
 		sp = getSharedPreferences("config",MODE_PRIVATE);
 
 		list_home.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			Intent intent = null;
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-				switch (i){
+				switch (i) {
 					case 0://进入手机防盗
 						showLostDialog();
 						break;
+					case 7: //进入高级应用
+						intent = new Intent(HomeActivity.this, AtoolActivity.class);
+						startActivity(intent);
+						break;
 					case 8://进入设置
-						Intent intent = new Intent(HomeActivity.this,SettingActivity.class);
+						intent = new Intent(HomeActivity.this, SettingActivity.class);
 						startActivity(intent);
 						break;
 					default:

@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -61,6 +62,8 @@ public class Splash extends Activity {
 		tv_splash_version.setText("版本号:"+getVersionName());
 		tv_update_info = (TextView) findViewById(R.id.tv_update_info);
 		boolean update = sp.getBoolean("update",false);
+		//拷贝数据库
+		copyDB();
 		if(update){
 			//检查升级
 			CheckUpdate();
@@ -76,6 +79,28 @@ public class Splash extends Activity {
 		AlphaAnimation aa = new AlphaAnimation(0.2f,1.0f);
 		aa.setDuration(500);
 		findViewById(R.id.rl_root_splash).startAnimation(aa);
+	}
+
+	private void copyDB() {
+		File file = new File(getFilesDir(), "address.db");
+		Log.i("filedir is : ",getFilesDir().getPath());
+		try {
+			if (file.exists() && file.length() > 0) {
+				Log.i("db exists?","true");
+			} else {
+				InputStream is = getAssets().open("address.db");
+				FileOutputStream fos = new FileOutputStream(file);
+				byte[] buffer = new byte[1024];
+				int len = 0;
+				while ((len = is.read(buffer)) != -1) {
+					fos.write(buffer, 0, len);
+				}
+				is.close();
+				fos.close();
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	private Handler handler = new Handler(){

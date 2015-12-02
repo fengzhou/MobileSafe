@@ -1,9 +1,7 @@
 package com.example.receiver;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.app.admin.DevicePolicyManager;
+import android.content.*;
 import android.media.MediaPlayer;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -42,7 +40,7 @@ public class SMSReveiver extends BroadcastReceiver{
 					}else{
 						SmsManager.getDefault().sendTextMessage(sender,null,last_location,null,null);
 					}
-					//终止这个广播
+					//终止这个广1播
 					abortBroadcast();
 				} else if (("#*alarm*#").equals(body)) {
 					//播放报警音乐
@@ -59,7 +57,20 @@ public class SMSReveiver extends BroadcastReceiver{
 					abortBroadcast();
 				} else if (("#*lockscreen*#").equals(body)) {
 					//远程锁屏
-
+					DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+					ComponentName who = new ComponentName(context,MyAdminReceiver.class);
+					if(dpm.isAdminActive(who)){
+						//如果已经有管理员权限
+						dpm.lockNow();
+					}else{
+						//如果没有管理员权限
+						Intent itt = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+						itt.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, who);
+						//劝说用户开启管理员权限
+						itt.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+								"哥们开启我可以一键锁屏，你的按钮就不会经常失灵");
+						context.startActivity(itt);
+					}
 					//终止这个广播
 					abortBroadcast();
 				}
