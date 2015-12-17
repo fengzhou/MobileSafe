@@ -39,10 +39,6 @@ public class SQLDBTools {
 					address = "客服电话";
 					break;
 				case 7:
-					//
-					address = "本地号码";
-					break;
-
 				case 8:
 					address = "本地号码";
 					break;

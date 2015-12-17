@@ -20,7 +20,21 @@
             itheima:desc_off="设置自动更新已经关闭"
             android:id="@+id/srv_update"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></com.example.ui.SettingItemView>
+            android:layout_height="wrap_content">
+    </com.example.ui.SettingItemView>
 
+    <com.example.ui.SettingItemView
+            itheima:title="设置来电显示"
+            itheima:desc_on="设置来电显示已经开启"
+            itheima:desc_off="设置来电显示已经关闭"
+            android:id="@+id/srv_addphoneress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+    </com.example.ui.SettingItemView>
+    <com.example.ui.SettingClickView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/set_changebg">
+    </com.example.ui.SettingClickView>
 
 </LinearLayout>
