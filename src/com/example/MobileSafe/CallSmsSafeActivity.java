@@ -2,6 +2,7 @@ package com.example.MobileSafe;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,7 +42,6 @@ public class CallSmsSafeActivity extends Activity{
 		dao = new BlackNumberDao(this);
 		addcallsms = (Button) findViewById(R.id.lv_addcallsms);
 		infoList = dao.findall();
-		Log.i(TAG,"info size : "+infoList.size());
 		listView.setAdapter(adapter);
 
 		addcallsms.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +120,7 @@ public class CallSmsSafeActivity extends Activity{
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView, ViewGroup parent) {
 			View view;
 			VoiltHoder hoder;
 			//做内存优化
@@ -129,11 +129,30 @@ public class CallSmsSafeActivity extends Activity{
 				hoder = new VoiltHoder();
 				hoder.tv_number = (TextView) view.findViewById(R.id.lv_callnumber);
 				hoder.tv_mode = (TextView) view.findViewById(R.id.lv_callmode);
+				hoder.tv_image = (ImageView) view.findViewById(R.id.iv_delete);
 				view.setTag(hoder);
 			}else{
 				view = convertView;
 				hoder = (VoiltHoder) view.getTag();
 			}
+			hoder.tv_image.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder buider = new AlertDialog.Builder(CallSmsSafeActivity.this);
+					buider.setTitle("警告");
+					buider.setMessage("确定删除这条信息吗？");
+					buider.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dao.del(infoList.get(position).getNumber());
+							infoList.remove(position);
+							adapter.notifyDataSetChanged();
+						}
+					});
+					buider.setNegativeButton("取消",null);
+					buider.create().show();
+				}
+			});
 			hoder.tv_number.setText(infoList.get(position).getNumber());
 			String mode = infoList.get(position).getMode();
 			if("1".equals(mode)){
@@ -150,6 +169,7 @@ public class CallSmsSafeActivity extends Activity{
 	static class VoiltHoder{
 		private TextView tv_number;
 		private TextView tv_mode;
+		private ImageView tv_image;
 	}
 
 }
