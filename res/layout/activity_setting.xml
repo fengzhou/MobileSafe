@@ -31,10 +31,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
     </com.example.ui.SettingItemView>
+    <com.example.ui.SettingItemView
+            itheima:title="黑名单拦截设置"
+            itheima:desc_on="黑名单拦截设置开启"
+            itheima:desc_off="黑名单拦截设置关闭"
+            android:id="@+id/srv_callsms_safe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></com.example.ui.SettingItemView>
     <com.example.ui.SettingClickView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/set_changebg">
     </com.example.ui.SettingClickView>
+
 
 </LinearLayout>

@@ -21,5 +21,12 @@
             android:id="@+id/lv_callmode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+    <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_marginRight="3dip"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/delete_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 </RelativeLayout>
