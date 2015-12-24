@@ -30,19 +30,50 @@ public class CallSmsSafeActivity extends Activity{
 	private CheckBox cb_sms;
 	private Button bt_ok;
 	private Button bt_cancel;
-
+	private LinearLayout ll_loading;
 	private callsmsAdapter adapter;
+	private int offset = 0;
+	private int pagemax = 10;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_callsmssafe);
-		adapter = new callsmsAdapter();
+
 		listView = (ListView) findViewById(R.id.lv_call_sms_safe);
+		ll_loading = (LinearLayout) findViewById(R.id.ll_loading);
 		dao = new BlackNumberDao(this);
 		addcallsms = (Button) findViewById(R.id.lv_addcallsms);
-		infoList = dao.findall();
-		listView.setAdapter(adapter);
+		filldata();
+		listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				switch (scrollState){
+					case SCROLL_STATE_FLING:
+						System.out.println("惯性滑动..........");
+						break;
+					case SCROLL_STATE_IDLE:
+						System.out.println("空闲状态..........");
+						//获取最后一个可见条目在集合中的位置
+						int lastposition = listView.getLastVisiblePosition();
+						if(lastposition == infoList.size()-1){
+							offset+=pagemax;
+							filldata();
+						}
+						break;
+					case SCROLL_STATE_TOUCH_SCROLL:
+						System.out.println("触摸滑动..........");
+						break;
+					default:
+						break;
+				}
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+			}
+		});
 
 		addcallsms.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -99,6 +130,34 @@ public class CallSmsSafeActivity extends Activity{
 
 			}
 		});
+
+	}
+
+	private void filldata(){
+		ll_loading.setVisibility(View.VISIBLE);
+		new Thread(){
+			@Override
+			public void run() {
+				super.run();
+				if(infoList == null){
+					infoList = dao.findall(offset,pagemax);
+				}else{
+					infoList.addAll(dao.findall(offset,pagemax));
+				}
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						if(adapter==null) {
+							adapter = new callsmsAdapter();
+							listView.setAdapter(adapter);
+						}else{
+							adapter.notifyDataSetChanged();
+						}
+						ll_loading.setVisibility(View.INVISIBLE);
+					}
+				});
+			}
+		}.start();
 
 	}
 

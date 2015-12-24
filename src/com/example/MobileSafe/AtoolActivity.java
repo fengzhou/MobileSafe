@@ -1,11 +1,12 @@
 package com.example.MobileSafe;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.utils.SMSUtils;
@@ -27,8 +28,9 @@ public class AtoolActivity extends Activity{
 		smsrestore = (TextView) findViewById(R.id.smsrestore);
 		pd = new ProgressDialog(this);
 		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		pd.setMessage("正在备份...");
+		pd.setCancelable(false);
 		pd.setCanceledOnTouchOutside(false);
-		pd.setMessage("正在备份短信");
 		/**
 		 * 号码归属地查询
 		 */
@@ -43,7 +45,6 @@ public class AtoolActivity extends Activity{
 		 * 短信备份
 		 */
 		smsbackup.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				pd.show();
@@ -52,15 +53,25 @@ public class AtoolActivity extends Activity{
 					public void run() {
 						super.run();
 						try {
-							SMSUtils.smsbackup(getApplicationContext(),pd);
-							runOnUiThread(new Runnable() {
+							SMSUtils.smsbackup(getApplicationContext(), new SMSUtils.SmsCallBack() {
 								@Override
-								public void run() {
-									Toast.makeText(getApplicationContext(),"短信备份成功",Toast.LENGTH_SHORT).show();
+								public void beforebackup(int max) {
+									pd.setMax(max);
+								}
+
+								@Override
+								public void progessbackup(int progess) {
+									pd.setProgress(progess);
 								}
 							});
-						} catch (Exception e) {
+							runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								Toast.makeText(getApplicationContext(),"短信备份成功",Toast.LENGTH_SHORT).show();
+							}
+						}); } catch (Exception e) {
 							android.util.Log.i("iii::",e.getMessage());
+							e.printStackTrace();
 							runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
@@ -80,6 +91,29 @@ public class AtoolActivity extends Activity{
 		smsrestore.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(AtoolActivity.this);
+				builder.setTitle("警告！").setMessage("是否清空所有短信?");
+				builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							SMSUtils.smsrestore(AtoolActivity.this, true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							SMSUtils.smsrestore(AtoolActivity.this,false);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				builder.create().show();
 
 			}
 		});
