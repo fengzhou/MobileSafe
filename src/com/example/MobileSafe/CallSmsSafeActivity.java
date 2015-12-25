@@ -127,10 +127,8 @@ public class CallSmsSafeActivity extends Activity{
 						dialog.dismiss();
 					}
 				});
-
 			}
 		});
-
 	}
 
 	private void filldata(){
