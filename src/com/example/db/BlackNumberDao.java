@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2015/12/18.
@@ -56,12 +57,20 @@ public class BlackNumberDao {
 
 	/**
 	 * 查询所有的黑名单
+	 * @param offset : 从哪个位置开始;
+	 * @param max: 一次最多获取多少个
 	 * @return
 	 */
-	public List<BlackNumberInfo> findall(){
+	public List<BlackNumberInfo> findall(int offset,int max){
+		try {
+			TimeUnit.SECONDS.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		List<BlackNumberInfo> list = new LinkedList<BlackNumberInfo>();
 		SQLiteDatabase database = helper.getReadableDatabase();
-		Cursor cursor = database.rawQuery("select number,mode from blacknumber order by _id desc", null);
+		Cursor cursor = database.rawQuery("select number,mode from blacknumber order by _id desc limit ? offset ?",
+				new String[]{String.valueOf(max),String.valueOf(offset)});
 		while (cursor.moveToNext()){
 			BlackNumberInfo blackNumberInfo = new BlackNumberInfo();
 			String number = cursor.getString(0);
