@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -62,6 +63,7 @@ public class Splash extends Activity {
 		tv_splash_version.setText("版本号:"+getVersionName());
 		tv_update_info = (TextView) findViewById(R.id.tv_update_info);
 		boolean update = sp.getBoolean("update",false);
+		installShotcut();
 		//拷贝数据库
 		copyDB();
 		if(update){
@@ -83,7 +85,6 @@ public class Splash extends Activity {
 
 	private void copyDB() {
 		File file = new File(getFilesDir(), "address.db");
-		Log.i("filedir is : ",getFilesDir().getPath());
 		try {
 			if (file.exists() && file.length() > 0) {
 				Log.i("db exists?","true");
@@ -134,6 +135,35 @@ public class Splash extends Activity {
 			}
 		}
 	};
+
+	/**
+	 * 创建应用程序快捷图标
+	 */
+	private void installShotcut(){
+		boolean flag = sp.getBoolean("shotcut",false);
+		if(flag)
+			return;
+		//发送广播的意图， 大吼一声告诉桌面，要创建快捷图标了
+		Toast.makeText(this,"start create icon",Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent();
+		intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+		//快捷方式  要包含3个重要的信息 1，名称 2.图标 3.干什么事情
+		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "手机小卫士");
+		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+		//桌面点击图标对应的意图。
+		Intent shortcutIntent = new Intent();
+		shortcutIntent.setAction("android.intent.action.MAIN");
+		shortcutIntent.addCategory("android.intent.category.LAUNCHER");
+		shortcutIntent.setClassName(getPackageName(), "com.example.MobileSafe.Splash");
+//		shortcutIntent.setAction("com.itheima.xxxx");
+//		shortcutIntent.addCategory(Intent.CATEGORY_DEFAULT);
+				intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+		sendBroadcast(intent);
+		SharedPreferences.Editor editor = sp.edit();
+		editor.putBoolean("shotcut",true);
+		editor.commit();
+	}
+
 
 	/**
 	 * 弹出升级对话框

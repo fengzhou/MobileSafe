@@ -1,8 +1,11 @@
 package com.example.MobileSafe;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
@@ -20,7 +23,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2015/12/24.
  */
-public class AppManagerActivity extends Activity{
+public class AppManagerActivity extends Activity implements View.OnClickListener {
 
 	private TextView tv_sd_size;
 	private TextView tv_rom_size;
@@ -32,8 +35,12 @@ public class AppManagerActivity extends Activity{
 	private List<AppInfo> sysAppInfos;
 
 	private TextView tv_status;
-
+	private AppInfo appInfo;
 	private PopupWindow popupWindow;
+
+	private LinearLayout ll_start;
+	private LinearLayout ll_uninstall;
+	private LinearLayout ll_share;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +107,7 @@ public class AppManagerActivity extends Activity{
 		lv_app_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				AppInfo appInfo;
+
 				if(position == 0){
 					return;
 				}else if(position == userAppInfos.size()+1){
@@ -115,14 +122,20 @@ public class AppManagerActivity extends Activity{
 					appInfo = userAppInfos.get(newposition);
 				}
 				dismissPopUpWindow();
-				TextView tv = new TextView(getApplicationContext());
-				tv.setText(appInfo.getPackagename());
-				tv.setTextColor(Color.WHITE);
-				popupWindow = new PopupWindow(tv,-2,-2);
-				popupWindow.setBackgroundDrawable(new ColorDrawable(Color.RED));
+				View contentView = View.inflate(getApplicationContext(),R.layout.popup_app_item,null);
+				contentView.setBackgroundColor(Color.BLUE);
+				ll_share = (LinearLayout) contentView.findViewById(R.id.ll_share);
+				ll_uninstall = (LinearLayout) contentView.findViewById(R.id.ll_uninstall);
+				ll_start = (LinearLayout) contentView.findViewById(R.id.ll_start);
+
+				ll_share.setOnClickListener(AppManagerActivity.this);
+				ll_uninstall.setOnClickListener(AppManagerActivity.this);
+				ll_start.setOnClickListener(AppManagerActivity.this);
+
+				popupWindow = new PopupWindow(contentView,-2,-2);
 				int[] locations = new int[2];
 				view.getLocationInWindow(locations);
-				popupWindow.showAtLocation(parent, Gravity.LEFT | Gravity.TOP,locations[0],locations[1]);
+				popupWindow.showAtLocation(parent, Gravity.LEFT | Gravity.TOP,100,locations[1]);
 
 			}
 		});
@@ -133,6 +146,61 @@ public class AppManagerActivity extends Activity{
 		if(popupWindow != null && popupWindow.isShowing()){
 			popupWindow.dismiss();
 			popupWindow = null;
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		dismissPopUpWindow();
+		switch (v.getId()){
+			case R.id.ll_start:
+				startApplication();
+				break;
+			case R.id.ll_uninstall:
+				if(appInfo.isUserApp()) {
+					uninstallapp();
+				}else{
+					Toast.makeText(this,"系统应用需要root后获取权限才能卸载！",Toast.LENGTH_SHORT).show();
+				}
+				break;
+			case R.id.ll_share:
+				shareApp();
+				break;
+		}
+	}
+
+	/**
+	 * 分享引用应用
+	 */
+	private void shareApp() {
+		Intent intent = new Intent();
+		intent.setAction("android.intent.action.SEND");
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT,"推荐您使用 : "+appInfo.getName());
+		startActivity(intent);
+	}
+
+	/**
+	 * 卸载应用
+	 */
+	private void uninstallapp() {
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_DELETE);
+		intent.setData(Uri.parse("package:"+appInfo.getPackagename()));
+		startActivity(intent);
+	}
+
+	/**
+	 * 启动其他应用
+	 */
+	private void startApplication(){
+		PackageManager pm = getPackageManager();
+		Intent intent = pm.getLaunchIntentForPackage(appInfo.getPackagename());
+		if(intent==null){
+			Toast.makeText(getApplicationContext(),"对不起，无法打开该应用!",Toast.LENGTH_SHORT).show();
+		}else {
+			startActivity(intent);
 		}
 	}
 
