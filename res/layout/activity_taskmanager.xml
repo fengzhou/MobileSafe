@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+            android:background="#8899ff00"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="22sp"
+            android:text="进程管理"
+            android:layout_width="fill_parent"
+            android:layout_height="55dip"/>
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+                android:id="@+id/tv_task_process"
+                android:textSize="15sp"
+                android:text="正在运行的进程:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:id="@+id/tv_task_memory"
+                android:layout_marginRight="10dp"
+                android:textSize="15sp"
+                android:layout_alignParentRight="true"
+                android:text="手机可用内存:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        <LinearLayout
+                android:visibility="invisible"
+                android:id="@+id/ll_task_loading"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+            <ProgressBar
+                    android:id="@+id/pb_loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <TextView
+                    android:text="正在加载中..."
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <ListView
+                android:id="@+id/lv_task_info"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"></ListView>
+
+
+    </FrameLayout>
+
+</LinearLayout>

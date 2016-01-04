@@ -55,6 +55,10 @@ public class HomeActivity extends Activity {
 						intent = new Intent(HomeActivity.this,AppManagerActivity.class);
 						startActivity(intent);
 						break;
+					case 3:
+						intent = new Intent(HomeActivity.this,TaskManagerActivity.class);
+						startActivity(intent);
+						break;
 					case 7: //进入高级应用
 						intent = new Intent(HomeActivity.this, AtoolActivity.class);
 						startActivity(intent);
