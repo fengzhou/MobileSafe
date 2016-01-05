@@ -44,7 +44,7 @@
 		<activity android:name=".Query_phoneActivity"> </activity>
 		<activity android:name=".CallSmsSafeActivity"></activity>
 		<activity android:name=".AppManagerActivity"></activity>
-
+		<activity android:name=".TaskManagerActivity"></activity>
 
 
 		<service android:name="com.example.service.GPSservice"></service>
