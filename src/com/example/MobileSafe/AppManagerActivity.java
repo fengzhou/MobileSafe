@@ -119,7 +119,7 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
 				}else{
 					//系统程序
 					int newposition = position-1-1-userAppInfos.size();
-					appInfo = userAppInfos.get(newposition);
+					appInfo = sysAppInfos.get(newposition);
 				}
 				dismissPopUpWindow();
 				View contentView = View.inflate(getApplicationContext(),R.layout.popup_app_item,null);

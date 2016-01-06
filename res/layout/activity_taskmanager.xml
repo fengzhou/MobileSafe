@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"/>
     </RelativeLayout>
     <FrameLayout
+            android:layout_weight="9999"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
         <LinearLayout
@@ -56,7 +57,53 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"></ListView>
 
+        <TextView
+                android:id="@+id/tv_task_status"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="用户程序：个"
+                android:textColor="#ffffff"
+                android:background="#ff888888"
+                />
 
     </FrameLayout>
+
+    <LinearLayout
+            android:visibility="invisible"
+            android:id="@+id/ll_task_memu"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <Button
+                android:onClick="selectAll"
+                android:layout_weight="1"
+                android:text="全选"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <Button
+                android:onClick="disselectAll"
+                android:layout_weight="1"
+                android:text="反选"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <Button
+                android:onClick="clearSelectTask"
+                android:layout_weight="1"
+                android:text="清理"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <Button
+                android:onClick="startSetting"
+                android:layout_weight="1"
+                android:text="设置"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </LinearLayout>

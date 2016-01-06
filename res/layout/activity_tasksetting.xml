@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+            android:background="#8899ff00"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="22sp"
+            android:text="设置"
+            android:layout_width="fill_parent"
+            android:layout_height="55dip"/>
+
+    <CheckBox
+            android:id="@+id/cb_task_showsys"
+            android:text="显示系统进程"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <CheckBox
+            android:id="@+id/cb_task_lockclear"
+            android:text="锁屏清理系统"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>

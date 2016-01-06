@@ -13,6 +13,16 @@ public class TaskInfo {
 	private boolean userTask;
 	private long memsize;
 
+	public boolean ischecked() {
+		return ischecked;
+	}
+
+	public void setIschecked(boolean ischecked) {
+		this.ischecked = ischecked;
+	}
+
+	private boolean ischecked;
+
 	public String getName() {
 		return name;
 	}
