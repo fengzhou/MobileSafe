@@ -5,14 +5,19 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Address;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 import com.example.service.AdressService;
 import com.example.service.CallSmsService;
+import com.example.service.WatchDogService;
 import com.example.ui.SettingClickView;
 import com.example.ui.SettingItemView;
 import com.example.utils.ServerUtils;
+
 
 /**
  * 设置activity
@@ -35,6 +40,8 @@ public class SettingActivity extends Activity {
 	//黑名单拦截设置
 	private SettingItemView siv_callsms_safe;
 
+	private SettingItemView siv_watchdog;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,6 +50,7 @@ public class SettingActivity extends Activity {
 		siv_update = (SettingItemView) findViewById(R.id.srv_update);
 		set_changebk = (SettingClickView) findViewById(R.id.set_changebg);
 		siv_callsms_safe = (SettingItemView) findViewById(R.id.srv_callsms_safe);
+		siv_watchdog = (SettingItemView) findViewById(R.id.srv_watchdog);
 		boolean update = sp.getBoolean("update",false);
 		if(update){
 			//自动升级已经打开
@@ -103,6 +111,67 @@ public class SettingActivity extends Activity {
 				}
 			}
 		});
+		isServerRunning = ServerUtils.isServerRunning(this,"com.example.service.WatchDogService");
+		if(isServerRunning){
+			//表示服务开启，且正在运行
+			siv_watchdog.setBoxChecked(true);
+		}else{
+			//表示服务未开启
+			siv_watchdog.setBoxChecked(false);
+		}
+
+
+		//开启开门狗服务
+		final Intent wathdogserver = new Intent(this, WatchDogService.class);
+		siv_watchdog.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				if(!siv_watchdog.isChecked()) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+					View view = View.inflate(SettingActivity.this, R.layout.dialog_watchdog_pwd, null);
+					builder.setView(view);
+					et_watchdog_pwd1 = (EditText) view.findViewById(R.id.et_watchdog_pwd1);
+					et_watchdog_pwd2 = (EditText) view.findViewById(R.id.et_watchdog_pwd2);
+					bt_watchdog_ok = (Button) view.findViewById(R.id.bt_watchdog_ok);
+					bt_watchdog_cancel = (Button) view.findViewById(R.id.bt_watchdog_cancel);
+
+					bt_watchdog_ok.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							String pwd1 = et_watchdog_pwd1.getText().toString().trim();
+							String pwd2 = et_watchdog_pwd2.getText().toString().trim();
+							if (TextUtils.isEmpty(pwd1) || TextUtils.isEmpty(pwd2)) {
+								Toast.makeText(SettingActivity.this, "对不起，密码不能为空.", Toast.LENGTH_SHORT).show();
+								return;
+							} else {
+								if (pwd1.equals(pwd2)) {
+									SharedPreferences.Editor editor = sp.edit();
+									editor.putString("applock", pwd1);
+									editor.commit();
+									Toast.makeText(SettingActivity.this, "设置成功!", Toast.LENGTH_SHORT).show();
+									siv_watchdog.setBoxChecked(true);
+									startService(wathdogserver);
+									dialog.dismiss();
+								} else {
+									Toast.makeText(SettingActivity.this, "对不起，两次密码输入不正确.", Toast.LENGTH_SHORT).show();
+								}
+							}
+						}
+					});
+					bt_watchdog_cancel.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							dialog.dismiss();
+						}
+					});
+					dialog = builder.show();
+				}else{
+					siv_watchdog.setBoxChecked(false);
+					stopService(wathdogserver);
+				}
+			}
+		});
 		set_changebk.setTitle("归属地提示风格");
 		int default_which = sp.getInt("which",0);
 		final String[] items = {"半透明","活力橙","卫士蓝","金属灰","苹果绿"};
@@ -131,6 +200,13 @@ public class SettingActivity extends Activity {
 			}
 		});
 	}
+
+	private EditText et_watchdog_pwd1;
+	private EditText et_watchdog_pwd2;
+	private Button bt_watchdog_ok;
+	private Button bt_watchdog_cancel;
+	private AlertDialog dialog;
+
 	@Override
 	protected void onResume() {
 		super.onResume();

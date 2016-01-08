@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.example.db.ApplockDao;
 import com.example.utils.AppInfo;
 import com.example.utils.AppInfoProvider;
 
@@ -42,11 +43,14 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
 	private LinearLayout ll_uninstall;
 	private LinearLayout ll_share;
 
+	private ApplockDao dao;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_appmanager);
 		tv_rom_size = (TextView) findViewById(R.id.tx_rom_size);
+		dao = new ApplockDao(this);
 		tv_sd_size = (TextView) findViewById(R.id.tx_sd_size);
 		lv_app_list = (ListView) findViewById(R.id.lv_app_list);
 		lv_app_loading = (LinearLayout) findViewById(R.id.lv_app_loading);
@@ -136,7 +140,41 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
 				int[] locations = new int[2];
 				view.getLocationInWindow(locations);
 				popupWindow.showAtLocation(parent, Gravity.LEFT | Gravity.TOP,100,locations[1]);
-
+			}
+		});
+		/**
+		 * listview item 长按事件
+		 * 当返回值为false的时候，表示处理完成了长按事件后，这个动作还可以被其他事件所执行。比如：item 有点击事件，在处理完长按时间后会继续触发点击事件
+		 * 当返回值为true的时候，表示处理完成了长按事件，其他动作不能被执行了。
+		 */
+		lv_app_list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				if(position == 0){
+					return true;
+				}else if(position == userAppInfos.size()+1){
+					return true;
+				}else if(position<userAppInfos.size()){
+					//用户程序
+					int newposition = position - 1;
+					appInfo = userAppInfos.get(newposition);
+				}else{
+					//系统程序
+					int newposition = position-1-1-userAppInfos.size();
+					appInfo = sysAppInfos.get(newposition);
+				}
+				boolean flag = dao.findpg(appInfo.getPackagename());
+				ViewHolder holder = (ViewHolder) view.getTag();
+				if(flag){
+					//如果是被锁定的，那么就解除锁定
+					holder.iv_app_lock.setImageResource(R.drawable.unlock);
+					dao.delete(appInfo.getPackagename());
+				}else{
+					//给程序加锁
+					holder.iv_app_lock.setImageResource(R.drawable.lock);
+					dao.add(appInfo.getPackagename());
+				}
+				return true;
 			}
 		});
 
@@ -208,6 +246,7 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
 		private TextView tv_app_name;
 		private TextView tv_app_location;
 		private ImageView tv_app_icon;
+		private ImageView iv_app_lock;
 	}
 
 	private class MyAdapter extends BaseAdapter{
@@ -256,6 +295,7 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
 				holder.tv_app_icon = (ImageView) view.findViewById(R.id.iv_app_icon);
 				holder.tv_app_name = (TextView) view.findViewById(R.id.tv_app_name);
 				holder.tv_app_location = (TextView) view.findViewById(R.id.tv_app_location);
+				holder.iv_app_lock = (ImageView) view.findViewById(R.id.iv_app_lock);
 				view.setTag(holder);
 			}
 			holder.tv_app_name.setText(appInfo.getName());
@@ -264,6 +304,11 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
 				holder.tv_app_location.setText("手机内存");
 			}else{
 				holder.tv_app_location.setText("外部存储器");
+			}
+			if(dao.findpg(appInfo.getPackagename())){
+				holder.iv_app_lock.setImageResource(R.drawable.lock);
+			}else{
+				holder.iv_app_lock.setImageResource(R.drawable.unlock);
 			}
 			return view;
 		}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+            android:text="请输入看门狗密码"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    <ImageView
+            android:id="@+id/iv_doc_prc"
+            android:src="@drawable/ic_launcher"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+    <TextView
+            android:id="@+id/tv_dog_packagename"
+            android:text="这里是展示程序包名的"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    <EditText
+            android:password="true"
+            android:id="@+id/et_dog_pwd"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    <Button
+            android:onClick="quitWatchDog"
+            android:text="确定"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>

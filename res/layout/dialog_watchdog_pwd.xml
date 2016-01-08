@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <EditText
+            android:hint="请输入密码"
+            android:password="true"
+            android:id="@+id/et_watchdog_pwd1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    <EditText
+            android:hint="请再次输入密码"
+            android:password="true"
+            android:id="@+id/et_watchdog_pwd2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    <LinearLayout
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        <Button
+                android:id="@+id/bt_watchdog_ok"
+                android:text="确定"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <Button
+                android:id="@+id/bt_watchdog_cancel"
+                android:text="取消"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</LinearLayout>

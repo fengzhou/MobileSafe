@@ -36,5 +36,12 @@
             android:textSize="16sp"
             android:text="安装位置"
             />
+        <ImageView
+                android:id="@+id/iv_app_lock"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:src="@drawable/unlock"
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
 
 </RelativeLayout>

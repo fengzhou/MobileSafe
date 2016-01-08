@@ -21,6 +21,7 @@
 	<uses-permission android:name="android.permission.WRITE_SMS"></uses-permission>
 	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
 	<uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"></uses-permission>
+	<uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
 
 	<application
 			android:label="@string/app_name"
@@ -47,10 +48,20 @@
 		<activity android:name=".AppManagerActivity"></activity>
 		<activity android:name=".TaskManagerActivity"></activity>
 		<activity android:name=".TaskSettingActivity"></activity>
+		<activity android:name=".WatchDogMimaActivity"
+				android:launchMode="singleInstance"
+				android:excludeFromRecents="true">
+		</activity>
+
+		<!--android:launchMode="singleInstance" 单例模式-->
+		<!--android:excludeFromRecents="true" 在最近任务列表中不显示该activity>-->
 
 		<service android:name="com.example.service.GPSservice"></service>
 		<service android:name="com.example.service.AdressService"></service>
 		<service android:name="com.example.service.CallSmsService"></service>
+		<service android:name="com.example.service.UpdagewidgetServer"></service>
+		<service android:name="com.example.service.WatchDogService"></service>
+
 
 		<receiver android:name="com.example.receiver.MyAdminReceiver"
 				android:description="@string/app_name"
@@ -81,6 +92,12 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider"
 			           android:resource="@xml/example_appwidget_info" />
+		</receiver>
+
+		<receiver android:name="com.example.receiver.KillAllReceiver">
+			<intent-filter>
+				<action android:name="com.example.killall"></action>
+			</intent-filter>
 		</receiver>
 
 	</application>
